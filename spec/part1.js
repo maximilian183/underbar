@@ -8,10 +8,6 @@
         _.identity(1);
       });
 
-      _.identity = function(value) {
-        return value;
-      };
-
       it('should return whatever value is passed into it', function() {
         var uniqueObject = {};
         expect(_.identity(1)).to.equal(1);
@@ -48,15 +44,6 @@
         _.last([1,2,3]);
       });
 
-      _.last = function(array, n, guard) {
-        if (array == null) return void 0;
-        if ((n != null) && !guard) {
-          return Array.prototype.slice.call(array, Math.max(array.length - n, 0));
-        } else {
-          return array[array.length - 1];
-        }
-      };
-
       it('should pull the last element from an array', function() {
         expect(_.last([1,2,3])).to.equal(3);
       });
@@ -78,21 +65,6 @@
       checkForNativeMethods(function() {
         _.each([1,2,3,4], function(number) {});
       });
-
-      var each = _.each = _.forEach = function(obj, iterator, context) {
-        if (obj == null) return;
-        if (Array.isArray(obj) && obj.length === +obj.length) {
-          for (var i = 0, l = obj.length; i < l; i++) {
-            if (iterator.call(context, obj[i], i, obj) === {}) return;
-          }
-        } else {
-          for (var key in obj) {
-            if (obj.hasOwnProperty(key)) {
-              if (iterator.call(context, obj[key], key, obj) === {}) return;
-            }
-          }
-        }
-      };
 
       it('should be a function', function() {
         expect(_.each).to.be.an.instanceOf(Function);
@@ -280,18 +252,7 @@
         _.filter([1, 2, 3, 4], isEven)
       });
 
-      _.filter = _.select = function(obj, iterator, context) {
-        var results = [];
-        if (obj == null) { return results; }
-        else{
-          for (var i=0; i<obj.length; i+=1){
-            if (iterator(obj[i])===true){
-              results.push(obj[i]);
-            }
-          }
-        }
-        return results;
-      };
+      
 
       it('should return all even numbers in an array', function() {
         var isEven = function(num) { return num % 2 === 0; };
@@ -322,19 +283,6 @@
         _.reject([1, 2, 3, 4, 5, 6], isEven)
       });
 
-      _.reject = function(obj, iterator, context) {
-        var results = [];
-        if (obj == null) { return results; }
-        else{
-          for (var i=0; i<obj.length; i+=1){
-            if (!iterator(obj[i])){
-              results.push(obj[i]);
-            }
-          }
-        }
-        return results;
-      };
-
       it('should reject all even numbers', function() {
         var isEven = function(num) { return num % 2 === 0; };
         var odds = _.reject([1, 2, 3, 4, 5, 6], isEven);
@@ -362,21 +310,6 @@
       checkForNativeMethods(function() {
         _.uniq([1, 2, 3, 4])
       });
-
-       _.uniq = _.unique = function(array, isSorted, iterator, context) {
-        if(array.length===0) return [];
-
-        var sortedArray = array.slice().sort();
-        var results = [sortedArray[0]];
-        if(array.length>1){
-          for(var i=1; i< sortedArray.length; i+=1){
-            if(results[results.length-1] !== sortedArray[i]){
-              results.push(sortedArray[i]);
-            } 
-          }
-        }
-        return results;
-      };
 
       it('should not mutate the input array', function() {
         var input = [1,2,3,4,5];
@@ -435,18 +368,6 @@
           return num * 2;
         })
       });
-
-      _.map = _.collect = function(obj, iterator, context) {
-        var results = [];
-        if (obj == null) { return results; }
-        else{
-          for (var i=0; i<obj.length; i+=1){
-            results.push(iterator(obj[i]));
-          }
-        }
-
-        return results;
-      };
 
       it('should not mutate the input array', function() {
         var input = [1,2,3,4,5];
@@ -532,25 +453,6 @@
         var add = function(tally, item) {return tally + item; };
         _.reduce([1, 2, 3, 4], add)
       });
-
-      _.reduce = _.foldl = _.inject = function(obj, iterator, memo, context) {
-        var initial = arguments.length > 2;
-        if (obj == null) obj = [];
-        if (Array.prototype.reduce && obj.reduce === Array.prototype.reduce) {
-          if (context) iterator = _.bind(iterator, context);
-          return initial ? obj.reduce(iterator, memo) : obj.reduce(iterator);
-        }
-        each(obj, function(value, index, list) {
-          if (!initial) {
-            memo = value;
-            initial = true;
-          } else {
-            memo = iterator.call(context, memo, value, index, list);
-          }
-        });
-        if (!initial) throw new TypeError(reduceError);
-        return memo;
-      };
 
       it('should be a function', function() {
         expect(_.reduce).to.be.an.instanceOf(Function);
