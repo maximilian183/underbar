@@ -36,9 +36,9 @@
 
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
-  _.last = function(array, n, guard) {
+  _.last = function(array, n) {
     if (array == null) return void 0;
-    if ((n != null) && !guard) {
+    if ((n != null)) {
       return Array.prototype.slice.call(array, Math.max(array.length - n, 0));
     } else {
       return array[array.length - 1];
@@ -50,16 +50,16 @@
   //
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
-  var each = _.each = _.forEach = function(obj, iterator, context) {
-    if (obj == null) return;
-    if (Array.isArray(obj) && obj.length === +obj.length) {
-      for (var i = 0, l = obj.length; i < l; i++) {
-        if (iterator.call(context, obj[i], i, obj) === {}) return;
+  _.each = function(collection, iterator) {
+    if (collection == null) return;
+    if (Array.isArray(collection) && collection.length === +collection.length) {
+      for (var i = 0; i < collection.length; i++) {
+        if (iterator(collection[i], i, collection) === {}) return;
       }
     } else {
-      for (var key in obj) {
-        if (obj.hasOwnProperty(key)) {
-          if (iterator.call(context, obj[key], key, obj) === {}) return;
+      for (var key in collection) {
+        if (collection.hasOwnProperty(key)) {
+          if (iterator(collection[key], key, collection) === {}) return;
         }
       }
     }
@@ -83,13 +83,13 @@
   };
 
   // Return all elements of an array that pass a truth test.
-  _.filter = _.select = function(obj, iterator, context) {
+  _.filter = function(collection, test) {
     var results = [];
-    if (obj == null) { return results; }
+    if (collection == null) { return results; }
     else{
-      for (var i=0; i<obj.length; i+=1){
-        if (iterator(obj[i])===true){
-          results.push(obj[i]);
+      for (var i=0; i<collection.length; i+=1){
+        if (test(collection[i])===true){
+          results.push(collection[i]);
         }
       }
     }
@@ -103,17 +103,13 @@
     var results = [];
     if (collection == null) { return results; }
     else{
-      for (var i=0; i<collection.length; i+=1){
-        if (!test(collection[i])){
-          results.push(collection[i]);
-        }
-      }
+      results = _.filter(collection, function(item) { return !test(item) });
     }
     return results;
   };
 
   // Produce a duplicate-free version of the array.
-  _.uniq = _.unique = function(array, isSorted, iterator, context) {
+  _.uniq = function(array) {
     if(array.length===0) return 
     var sortedArray = array.slice().sort();
     var results = [sortedArray[0]];
@@ -183,6 +179,21 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+    var reducedValue;
+    var count = 0;
+
+    if (accumulator !== undefined) {
+      reducedValue=accumulator;
+    }else{
+      reducedValue=collection[0];
+      count = 1;
+    }
+
+    for (var i=count; i<collection.length; i++){
+      reducedValue = iterator(reducedValue, collection[i]);
+    }
+
+    return reducedValue;
   };
 
   // Determine if the array or object contains a given value (using `===`).

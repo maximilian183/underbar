@@ -461,7 +461,6 @@
       it('should return a value', function() {
         var result = _.reduce([3,2,1], function(memo, item) {return item;});
         expect(result).to.be.defined;
-        console.log(result);
       });
 
       it('should not mutate the input array', function() {
@@ -491,7 +490,6 @@
          */
 
         expect(input).to.eql([1,2,3,4,5])
-        console.log(result);
       });
 
       it('should invoke the iterator function with arguments (memo, item) in that order', function() {
@@ -515,7 +513,6 @@
         }, 10);
 
         expect(orderTraversed).to.eql([1,2,3,4]);
-        console.log(orderTraversed);
       });
 
       it('should continue to call iterator even if the iterator returns undefined', function() {
