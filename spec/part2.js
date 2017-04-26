@@ -482,7 +482,6 @@
         expect(callback).to.have.not.been.called;
 
         clock.tick(1);
-
         expect(callback).to.have.been.calledOnce;
       });
 
